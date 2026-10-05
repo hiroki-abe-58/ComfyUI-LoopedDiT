@@ -1,0 +1,73 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# CPU only. No model weights are downloaded: the model tests use tiny random-initialized models.
+env:
+  COMFYUI_REF: v0.38.0
+  COMFYUI_COMMIT: 6b747c0428c343e1417219641db93a4fb7cb69ae
+  UPSTREAM_COMMIT: 92a9c1914258361f78e03426588c7c215944b504
+  T5_REVISION: 0613663d0d48ea86ba8cb3d7a44f0f65dc596a2a
+  T5_TOKENIZER_SHA256: fe2ebbbbde2985be723e0ce18217853e4020c5e9d35bd07be2c27ab9d3ead57a
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: ComfyUI-LoopedDiT
+          persist-credentials: false
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Reference checkouts and tokenizer (pinned)
+        run: |
+          git clone --quiet --depth 1 --branch $env:COMFYUI_REF https://github.com/Comfy-Org/ComfyUI.git refs/ComfyUI
+          if ((git -C refs/ComfyUI rev-parse HEAD) -ne $env:COMFYUI_COMMIT) { throw "ComfyUI commit mismatch" }
+          git clone --quiet --filter=blob:none https://github.com/OpenSenseNova/Looped-DiT.git refs/Looped-DiT
+          git -C refs/Looped-DiT checkout --quiet $env:UPSTREAM_COMMIT
+          Invoke-WebRequest -UseBasicParsing -OutFile refs/tokenizer.json "https://huggingface.co/google/flan-t5-large/resolve/$($env:T5_REVISION)/tokenizer.json"
+          if ((Get-FileHash refs/tokenizer.json -Algorithm SHA256).Hash.ToLower() -ne $env:T5_TOKENIZER_SHA256) { throw "tokenizer.json hash mismatch" }
+
+      - name: Install (CPU)
+        run: |
+          python -m pip install --upgrade pip
+          pip install torch==2.14.1 torchvision==0.29.1 --index-url https://download.pytorch.org/whl/cpu
+          pip install -r refs/ComfyUI/requirements.txt pytest ruff
+          pip list
+
+      - name: Lint
+        run: ruff check ComfyUI-LoopedDiT
+
+      - name: No absolute local paths in the repository
+        run: |
+          $hits = Get-ChildItem ComfyUI-LoopedDiT -Recurse -File -Exclude *.png,*.jpg | Where-Object { $_.FullName -notmatch '[\\/]\.git[\\/]' } | Select-String -Pattern '[A-Za-z]:\\{1,2}[A-Za-z0-9_.-]+\\|/home/[a-z]+/|/Users/[A-Za-z]+/'
+          if ($hits) { $hits | ForEach-Object { "$($_.Path):$($_.LineNumber)" }; throw "absolute local path found" }
+
+      - name: Tests (references required, nothing may be skipped)
+        env:
+          LOOPED_DIT_COMFYUI_DIR: ${{ github.workspace }}/refs/ComfyUI
+          LOOPED_DIT_UPSTREAM_DIR: ${{ github.workspace }}/refs/Looped-DiT
+          LOOPED_DIT_T5_TOKENIZER: ${{ github.workspace }}/refs/tokenizer.json
+          LOOPED_DIT_REQUIRE_REFERENCES: "1"
+        run: |
+          Set-Location ComfyUI-LoopedDiT
+          python -m pytest tests -q -rs -p no:cacheprovider -W ignore::DeprecationWarning -W ignore::FutureWarning

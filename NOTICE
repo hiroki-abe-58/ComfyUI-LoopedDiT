@@ -1,0 +1,22 @@
+Looped-DiT for ComfyUI
+Copyright (c) 2026 hiroki-abe-58. MIT License (see LICENSE).
+Unofficial integration. Not affiliated with or endorsed by the Looped-DiT authors, SenseNova, Google or Comfy Org.
+
+Third-party code included in this repository
+- looped_dit_comfy/vendor/model.py, diffusion.py, config.py: unmodified copies from
+  https://github.com/OpenSenseNova/Looped-DiT (commit 92a9c1914258361f78e03426588c7c215944b504), MIT License,
+  Copyright (c) 2026 Looped-DiT authors, Copyright (c) 2026 MiniT2I contributors. The full license text is in
+  looped_dit_comfy/vendor/LICENSE.
+- scripts/export_gui_workflows.py: maintainer tool by the same author as this repository.
+
+Models (not included; downloaded by the user, e.g. with tools/download_models.py)
+- sensenova/Looped-DiT-B16 and sensenova/Looped-DiT-B32 on Hugging Face: model card license MIT.
+- google/flan-t5-large on Hugging Face: Apache License 2.0 (https://www.apache.org/licenses/LICENSE-2.0).
+
+Libraries used at run time (installed with ComfyUI, not included)
+- PyTorch (BSD-style), Hugging Face transformers and tokenizers (Apache License 2.0), Pillow, NumPy, PyYAML.
+- ComfyUI (GPL-3.0) hosts the nodes.
+
+Images produced with these models are generated content. The licenses above do not by themselves settle every
+third-party right in a prompt or an output (for example trademarks or likenesses); users are responsible for how they
+use generated images.

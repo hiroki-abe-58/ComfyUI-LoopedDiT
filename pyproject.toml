@@ -1,0 +1,26 @@
+[project]
+name = "looped-dit"
+description = "Looped-DiT text-to-image for ComfyUI: official B/16 sampling reproduced bit-exactly, plus a loop-depth sweep (same prompt, seed and noise at loops 1/2/4)."
+version = "0.1.0"
+license = { file = "LICENSE" }
+requires-python = ">=3.10"
+dependencies = []
+
+[project.urls]
+Repository = "https://github.com/hiroki-abe-58/ComfyUI-LoopedDiT"
+
+[tool.comfy]
+PublisherId = "hiroki-abe-58"
+DisplayName = "Looped-DiT for ComfyUI"
+Icon = ""
+
+[tool.ruff]
+line-length = 150
+target-version = "py310"
+extend-exclude = ["looped_dit_comfy/vendor"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

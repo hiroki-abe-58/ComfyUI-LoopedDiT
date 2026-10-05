@@ -1,0 +1,27 @@
+{
+  "1": {
+    "class_type": "LoopedDiTLoader",
+    "_meta": {"title": "Looped-DiT Loader"},
+    "inputs": {"checkpoint": "looped-dit-b16.pt", "text_encoder": "flan-t5-large", "verify_hashes": true}
+  },
+  "2": {
+    "class_type": "LoopedDiTLoopSweep",
+    "_meta": {"title": "Looped-DiT Loop Sweep"},
+    "inputs": {"model": ["1", 0], "prompt": "a red cube on top of a blue sphere", "seed": 0, "loops": "1, 2, 4", "steps": 100, "cfg": 6.0}
+  },
+  "3": {
+    "class_type": "SaveImage",
+    "_meta": {"title": "Each loop depth"},
+    "inputs": {"images": ["2", 0], "filename_prefix": "LoopedDiT/sweep"}
+  },
+  "4": {
+    "class_type": "SaveImage",
+    "_meta": {"title": "Comparison grid"},
+    "inputs": {"images": ["2", 1], "filename_prefix": "LoopedDiT/sweep_grid"}
+  },
+  "5": {
+    "class_type": "PreviewAny",
+    "_meta": {"title": "Sweep report"},
+    "inputs": {"source": ["2", 2]}
+  }
+}

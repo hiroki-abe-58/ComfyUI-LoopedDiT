@@ -40,10 +40,11 @@ jobs:
 
       - name: Reference checkouts and tokenizer (pinned)
         run: |
-          git clone --quiet --depth 1 --branch $env:COMFYUI_REF https://github.com/Comfy-Org/ComfyUI.git refs/ComfyUI
+          # byte-exact references on every runner (Windows runners default to core.autocrlf=true)
+          git -c core.autocrlf=false clone --quiet --depth 1 --branch $env:COMFYUI_REF https://github.com/Comfy-Org/ComfyUI.git refs/ComfyUI
           if ((git -C refs/ComfyUI rev-parse HEAD) -ne $env:COMFYUI_COMMIT) { throw "ComfyUI commit mismatch" }
-          git clone --quiet --filter=blob:none https://github.com/OpenSenseNova/Looped-DiT.git refs/Looped-DiT
-          git -C refs/Looped-DiT checkout --quiet $env:UPSTREAM_COMMIT
+          git -c core.autocrlf=false clone --quiet --filter=blob:none https://github.com/OpenSenseNova/Looped-DiT.git refs/Looped-DiT
+          git -C refs/Looped-DiT -c core.autocrlf=false checkout --quiet $env:UPSTREAM_COMMIT
           Invoke-WebRequest -UseBasicParsing -OutFile refs/tokenizer.json "https://huggingface.co/google/flan-t5-large/resolve/$($env:T5_REVISION)/tokenizer.json"
           if ((Get-FileHash refs/tokenizer.json -Algorithm SHA256).Hash.ToLower() -ne $env:T5_TOKENIZER_SHA256) { throw "tokenizer.json hash mismatch" }
 

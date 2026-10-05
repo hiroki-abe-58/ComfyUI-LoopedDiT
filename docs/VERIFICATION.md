@@ -40,6 +40,18 @@ The 27 images are the README example prompt with seed 0 at loops 1/2/4, plus 4 p
   matches.
 - ComfyUI's global RNG state and the TF32 flags are the same before and after a generation.
 
+## Clean install and B/32
+- A fresh copy from `git archive` of the tested commit was placed in a differently named `custom_nodes` folder. The
+  models were installed with `tools/download_models.py` into an empty folder: real downloads at pinned revisions, all
+  SHA-256 checks passed. The full server check above was then repeated, with the same results (bit-identical,
+  re-execution, cancel, unload).
+- B/32 (`looped-dit-b32.pt`, sha256 `175f89f2...`) with the README example prompt, seed 0, loops 1/2/4: the 8-bit image
+  and float32 result are identical to the official code. Its 1/2/4 sweep shares one initial noise.
+- Model switching B/16 -> B/32 -> B/16 -> B/32 in one server: B/16 still equals its reference, and B/32 repeats exactly.
+- Memory, measured by the test harness on Windows: the ComfyUI process with the model loaded added at most 8.1 GiB to
+  the system commit charge during these runs. The official reference process added 7.6-8.3 GiB. GPU memory in use peaked
+  at about 3.9 GB, including about 1.4 GB used by other processes.
+
 ## CPU tests (CI)
 `tests/` covers:
 - the vendored files against their hashes and the upstream checkout;
@@ -54,5 +66,5 @@ No model weights are used in CI.
 
 ## Not verified
 - Other GPUs, drivers or torch builds; ComfyUI started with `--fast`, `--deterministic` or attention overrides.
-- B/32 beyond what is stated in the release notes; CPU, MPS and MLX.
+- B/32 beyond the example prompt; CPU, MPS and MLX.
 - Image quality beyond the author's own look at the demo images; no benchmark was run.

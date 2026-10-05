@@ -92,7 +92,7 @@ first-time SHA-256 check.
 - ComfyUI's memory manager does not know about this model. Use *Looped-DiT Unload* to free it.
 - Bit-identical results were checked on one GPU, driver and torch build, with ComfyUI's default flags. Other hardware or
   options such as `--fast` or `--deterministic` can change kernels and therefore pixels.
-- B/32: the loader accepts it and the download tool fetches it; see VERIFICATION.md for what was run.
+- B/32 was checked on the README example prompt only (seed 0, loops 1/2/4, bit-identical to the official code). The demo set uses B/16.
 - Prompts are truncated to 256 tokens, as in the official code.
 
 ## Credits and license

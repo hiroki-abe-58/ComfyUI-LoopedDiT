@@ -55,11 +55,12 @@ jobs:
           pip list
 
       - name: Lint
-        run: ruff check ComfyUI-LoopedDiT
+        run: ruff check --no-cache ComfyUI-LoopedDiT
 
       - name: No absolute local paths in the repository
         run: |
-          $hits = Get-ChildItem ComfyUI-LoopedDiT -Recurse -File -Exclude *.png,*.jpg | Where-Object { $_.FullName -notmatch '[\\/]\.git[\\/]' } | Select-String -Pattern '[A-Za-z]:\\{1,2}[A-Za-z0-9_.-]+\\|/home/[a-z]+/|/Users/[A-Za-z]+/'
+          $files = git -C ComfyUI-LoopedDiT ls-files | Where-Object { $_ -notmatch '\.(png|jpg)$' } | ForEach-Object { Join-Path ComfyUI-LoopedDiT $_ }  # tracked files only (not caches)
+          $hits = $files | Select-String -Pattern '[A-Za-z]:\\{1,2}[A-Za-z0-9_.-]+\\|/home/[a-z]+/|/Users/[A-Za-z]+/'
           if ($hits) { $hits | ForEach-Object { "$($_.Path):$($_.LineNumber)" }; throw "absolute local path found" }
 
       - name: Tests (references required, nothing may be skipped)

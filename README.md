@@ -59,6 +59,7 @@ official 8-bit conversion (`x * 127.5 + 128`, clamp, truncate), so *Save Image* 
 
 1. Clone into `ComfyUI/custom_nodes`:
    `git clone https://github.com/hiroki-abe-58/ComfyUI-LoopedDiT`
+   (or install `looped-dit` from the ComfyUI Manager / Comfy Registry).
 2. Download the models with ComfyUI's Python, at pinned revisions with SHA-256 checks:
    `python custom_nodes/ComfyUI-LoopedDiT/tools/download_models.py --models-dir models` (adds `--b32` for B/32).
    The resulting layout is:

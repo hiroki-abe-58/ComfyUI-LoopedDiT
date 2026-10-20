@@ -29,6 +29,13 @@
 The 27 images are the README example prompt with seed 0 at loops 1/2/4, plus 4 prompts x seeds 7 and 2026 x loops 1/2/4
 (docs/results/demo_manifest.json). All went through ComfyUI 0.38.0's HTTP queue (transformers 5.18.0, tokenizers 0.23.2).
 
+### 0.1.1
+
+0.1.1 disables two training-only functions of the vendored `config.py` (see `looped_dit_comfy/vendor/UPSTREAM.md`). The same 24
+Loop Sweep images (4 prompts x 2 seeds x loops 1/2/4) were generated again on 2026-10-21 from a `git clone` of the 0.1.1 commit,
+through ComfyUI 0.38.0's HTTP queue on the same RTX 5090: all 24 final float32 samples and all 24 8-bit images have the same SHA-256
+as in docs/results/demo_manifest.json (0.1.0).
+
 ## ComfyUI behaviour checked through the real server (127.0.0.1, test instance)
 - The 4 nodes register, and both API workflows pass ComfyUI's validation.
 - Re-queueing the same graph after clearing ComfyUI's cache (`/free`) really executes again and gives the same pixels.

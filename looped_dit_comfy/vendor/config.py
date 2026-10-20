@@ -1,3 +1,4 @@
+# This file was changed by ComfyUI-LoopedDiT; looped_dit_comfy/vendor/UPSTREAM.md describes the change.
 """Training configuration: one flat dataclass, loaded from YAML."""
 
 from __future__ import annotations
@@ -24,31 +25,12 @@ DEEP_SUPERVISION_WEIGHTINGS = ("final_plus_mean", "exponential", "uniform")
 
 
 def expand_vars(value: Any) -> Any:
-    """Recursively substitute ${VAR} in strings; unknown variables raise."""
-    if isinstance(value, str):
-
-        def substitute(match: re.Match) -> str:
-            name = match.group(1)
-            if name in os.environ:
-                return os.environ[name]
-            if name in DEFAULT_ROOTS:
-                return str(DEFAULT_ROOTS[name])
-            raise KeyError(f"undefined variable ${{{name}}} in {value!r}")
-
-        return re.sub(r"\$\{(\w+)\}", substitute, value)
-    if isinstance(value, list):
-        return [expand_vars(v) for v in value]
-    if isinstance(value, dict):
-        return {k: expand_vars(v) for k, v in value.items()}
-    return value
+    """Recursively substitute ${VAR} in strings (training configs; not part of the ComfyUI node pack)."""
+    raise NotImplementedError("expand_vars is used by training configs and is not included in ComfyUI-LoopedDiT")
 
 
 def load_yaml(path: str | Path) -> dict[str, Any]:
-    with open(path, encoding="utf-8") as f:
-        data = yaml.safe_load(f) or {}
-    if not isinstance(data, dict):
-        raise TypeError(f"{path} must contain a YAML mapping")
-    return expand_vars(data)
+    raise NotImplementedError("load_yaml reads training configs and is not included in ComfyUI-LoopedDiT")
 
 
 @dataclass

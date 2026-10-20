@@ -22,7 +22,7 @@ inside each pass: 6 + 5 x N + 6 blocks for B/16 (17, 22 and 32 blocks at N = 1, 
   grid and a JSON report that shows the shared noise hash. The official `sample.py` offers the same comparison with
   `--loops 1 2 3 4`; this node brings it into a ComfyUI graph.
 - **No extra Python packages.** Everything runs in the ComfyUI process, with ComfyUI's own torch, transformers and
-  tokenizers. The official `model.py`, `diffusion.py` and `config.py` are vendored unmodified. There is no subprocess and
+  tokenizers. The official `model.py` and `diffusion.py` are vendored unmodified; `config.py` has its two training-only YAML helpers disabled (see `looped_dit_comfy/vendor/UPSTREAM.md`). There is no subprocess and
   no download at run time.
 - **The tokenizer pitfall is handled.** Upstream pins `transformers < 5` because 5.x tokenizes trailing whitespace
   differently, while ComfyUI installs 5.x. The node tokenizes with the `tokenizers` library and the model's own

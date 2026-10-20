@@ -3,7 +3,8 @@ Copyright (c) 2026 hiroki-abe-58. MIT License (see LICENSE).
 Unofficial integration. Not affiliated with or endorsed by the Looped-DiT authors, SenseNova, Google or Comfy Org.
 
 Third-party code included in this repository
-- looped_dit_comfy/vendor/model.py, diffusion.py, config.py: unmodified copies from
+- looped_dit_comfy/vendor/model.py, diffusion.py (unmodified) and config.py (two training-only functions disabled; see
+  looped_dit_comfy/vendor/UPSTREAM.md): copies from
   https://github.com/OpenSenseNova/Looped-DiT (commit 92a9c1914258361f78e03426588c7c215944b504), MIT License,
   Copyright (c) 2026 Looped-DiT authors, Copyright (c) 2026 MiniT2I contributors. The full license text is in
   looped_dit_comfy/vendor/LICENSE.

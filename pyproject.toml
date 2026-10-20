@@ -1,7 +1,7 @@
 [project]
 name = "looped-dit"
 description = "Looped-DiT text-to-image for ComfyUI: official B/16 sampling reproduced bit-exactly, plus a loop-depth sweep (same prompt, seed and noise at loops 1/2/4)."
-version = "0.1.0"
+version = "0.1.1"
 license = { file = "LICENSE" }
 requires-python = ">=3.10"
 dependencies = []
